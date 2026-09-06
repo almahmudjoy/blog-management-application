@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Design tokens (Tailwind v4 @theme -> generates utilities like bg-brand-600)
+--------------------------------------------------------------------------- */
+@theme {
+  --color-brand-50: #eef4ff;
+  --color-brand-100: #d9e6ff;
+  --color-brand-200: #bcd3ff;
+  --color-brand-300: #8eb6ff;
+  --color-brand-400: #598eff;
+  --color-brand-500: #3366f6;
+  --color-brand-600: #1f47e0;
+  --color-brand-700: #1a37b4;
+  --color-brand-800: #1a308f;
+  --color-brand-900: #1a2d72;
+
+  --color-ink-50: #f7f8fa;
+  --color-ink-100: #eef0f4;
+  --color-ink-200: #dfe3ea;
+  --color-ink-300: #c5ccd8;
+  --color-ink-400: #97a1b3;
+  --color-ink-500: #6b7688;
+  --color-ink-600: #4c5567;
+  --color-ink-700: #38404f;
+  --color-ink-800: #232a36;
+  --color-ink-900: #141922;
+
+  --font-sans: ui-sans-serif, system-ui, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+}
+
+/* ---------------------------------------------------------------------------
+   Base
+--------------------------------------------------------------------------- */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-[#f4f7fb] text-ink-800 font-sans antialiased;
+  background-image: linear-gradient(180deg, #f8fbff 0%, #f4f7fb 42%, #eef3f9 100%);
+  background-attachment: fixed;
+}
+
+/* Visible focus ring for keyboard users on every interactive element. */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  @apply outline-none ring-2 ring-brand-500 ring-offset-2 ring-offset-[#f4f7fb];
+}
+
+/* Screen-reader-only helper (used for form labels that are visually implicit) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Clamp helpers for blog previews */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Skeleton shimmer used by <Loader variant="skeleton" /> */
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+.skeleton {
+  @apply rounded bg-ink-200;
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+}

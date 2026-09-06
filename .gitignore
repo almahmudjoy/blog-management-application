@@ -1,0 +1,30 @@
+# Root-level ignores for the BlogSpace submission (frontend + backend).
+
+# Environment files — never commit real secrets or API URLs
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+
+# Runtime user uploads (backend saves profile images here)
+uploads/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# OS / editor artifacts
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Build output that may appear outside the app folders
+dist/
+coverage/

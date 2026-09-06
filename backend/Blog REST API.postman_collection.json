@@ -1,0 +1,959 @@
+{
+  "info": {
+    "_postman_id": "66527fc2-91d3-4953-8805-b1776ab417d6",
+    "name": "Blog REST API",
+    "description": "# Blog REST API\n\nA REST API for a Blog Management Application.\n\n## Access Levels\n\n- Guest\n    \n- User\n    \n- Admin\n    \n\n## Features\n\n- User registration and login\n    \n- Token-based authentication\n    \n- Role-based authorization\n    \n- User profile management\n    \n- Password update\n    \n- Admin user management\n    \n- Blog creation\n    \n- Blog update and deletion\n    \n- Public blog viewing\n    \n- Blog search by title\n    \n- Blog filtering by category\n    \n\n## Base URL\n\n[http://localhost:5000](http://localhost:5000)\n\n## Authentication\n\nProtected endpoints require a Bearer Token.\n\nAuthorization header:\n\nBearer\n\n## Main API Groups\n\n### Authentication\n\n- Register\n    \n- Login\n    \n\n### User Management\n\n- Get all users\n    \n- Get user by ID\n    \n- Activate/Deactivate user\n    \n- Get own profile\n    \n- Update own profile\n    \n- Update password\n    \n\n### Blog Management\n\n- Create blog\n    \n- Get all blogs\n    \n- Get blog by ID\n    \n- Search blogs\n    \n- Filter blogs\n    \n- Update blog\n    \n- Delete blog",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53084089",
+    "_collection_link": "https://go.postman.co/collection/53084089-66527fc2-91d3-4953-8805-b1776ab417d6?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"firstname\": \"Al\",\r\n    \"lastname\": \"Nuhan\",\r\n    \"email\": \"nuhan@example.com\",\r\n    \"password\": \"password123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/auth/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "## Register User\n\nCreates a new user account.\n\n### Method\n\nPOST\n\n### Endpoint\n\n/api/auth/register\n\n### Access\n\nPublic\n\n### Request Body\n\n{  \n\"firstname\": \"John\",  \n\"lastname\": \"Doe\",  \n\"email\": \"[john@example.com](https://mailto:john@example.com)\",  \n\"password\": \"password123\"  \n}\n\n### Validation\n\n- Required fields cannot be empty.\n    \n- Email must have a valid format.\n    \n- Email must be unique.\n    \n- Password must meet the minimum length requirement.\n    \n- New users are created with the default role: user.\n    \n- New users are active by default.\n    \n- Users cannot assign themselves the admin role.\n    \n\n### Success\n\n201 Created"
+          },
+          "response": []
+        },
+        {
+          "name": "User Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"nuhan@example.com\",\r\n    \"password\": \"password123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "## User Login\n\nAuthenticates a registered user and returns an authentication token.\n\n### Method\n\nPOST\n\n### Endpoint\n\n/api/auth/login\n\n### Access\n\nPublic\n\n### Request Body\n\n{  \n\"email\": \"[john@example.com](https://mailto:john@example.com)\",  \n\"password\": \"password123\"  \n}\n\n### Requirements\n\n- Email and password are required.\n    \n- User must exist.\n    \n- User must be active.\n    \n- Credentials must be valid.\n    \n\n### Success\n\n200 OK\n\nReturns an authentication token.\n\n### Errors\n\n401 Unauthorized - Invalid credentials or deactivated account."
+          },
+          "response": []
+        },
+        {
+          "name": "Admin Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"admin@example.com\",\r\n    \"password\": \"password123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/auth/login",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "## Admin Login\n\nAuthenticates an active admin user and returns an authentication token.\n\n### Method\n\nPOST\n\n### Endpoint\n\n/api/auth/login\n\n### Access\n\nPublic\n\n### Request Body\n\n{  \n\"email\": \"[admin@example.com](https://mailto:admin@example.com)\",  \n\"password\": \"password123\"  \n}\n\n### Requirements\n\n- Email and password are required.\n    \n- Admin user must exist.\n    \n- Admin account must be active.\n    \n- Credentials must be valid.\n    \n- User must have the admin role.\n    \n\n### Success\n\n200 OK\n\nReturns an authentication token for the admin user.\n\n### Errors\n\n401 Unauthorized - Invalid credentials or deactivated account."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "All Users Admin",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ADMIN_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "users"
+              ]
+            },
+            "description": "## Get All Users\n\nRetrieves all registered users.\n\n### Method\n\nGET\n\n### Endpoint\n\n/api/users\n\n### Access\n\nAdmin Only\n\n### Requirements\n\n- Authentication is required.\n    \n- Only an admin can access this endpoint.\n    \n- All registered users are returned.\n    \n- Passwords must never be exposed.\n    \n\n### Success\n\n200 OK\n\nReturns a list of users without passwords.\n\n### Errors\n\n401 Unauthorized - Authentication token is missing or invalid.  \n403 Forbidden - User does not have admin permission."
+          },
+          "response": []
+        },
+        {
+          "name": "Get User by ID (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ADMIN_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/users/11",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "users",
+                "11"
+              ]
+            },
+            "description": "## Get User by ID\n\nRetrieves a specific user by their ID.\n\n### Method\n\nGET\n\n### Endpoint\n\n/api/users/:id\n\n### Access\n\nAdmin Only\n\n### Requirements\n\n- Authentication is required.\n    \n- Only an admin can access this endpoint.\n    \n- The user ID must exist.\n    \n- Password must not be returned.\n    \n\n### Success\n\n200 OK\n\nReturns the requested user's information.\n\n### Errors\n\n401 Unauthorized - Authentication token is missing or invalid.  \n403 Forbidden - User does not have admin permission.  \n404 Not Found - User does not exist."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Non-existing ID (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ADMIN_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/users/9999",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "users",
+                "9999"
+              ]
+            },
+            "description": "## Get User by ID\n\nRetrieves a specific user by their ID.\n\n### Method\n\nGET\n\n### Endpoint\n\n/api/users/:id\n\n### Access\n\nAdmin Only\n\n### Requirements\n\n- Authentication is required.\n    \n- Only an admin can access this endpoint.\n    \n- The user ID must exist.\n    \n- Password must not be returned.\n    \n\n### Success\n\n200 OK\n\nReturns the requested user's information.\n\n### Errors\n\n401 Unauthorized - Authentication token is missing or invalid.  \n403 Forbidden - User does not have admin permission.  \n404 Not Found - User does not exist."
+          },
+          "response": []
+        },
+        {
+          "name": "All Users (Normal User)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{USER_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "users"
+              ]
+            },
+            "description": "## Get All Users - Normal User Authorization Test\n\nVerifies that a normal user cannot access the admin-only users list.\n\n### Method\n\nGET\n\n### Endpoint\n\n/api/users\n\n### Access\n\nNormal User - Forbidden\n\n### Requirements\n\n- Authentication is required.\n    \n- A normal user must not be allowed to access all users.\n    \n- Only admins can access this endpoint.\n    \n\n### Expected Result\n\n403 Forbidden\n\n### Expected Response\n\n{  \n\"message\": \"Access denied. You do not have permission.\"  \n}"
+          },
+          "response": []
+        },
+        {
+          "name": "User Own Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{USER_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/users/profile",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "users",
+                "profile"
+              ]
+            },
+            "description": "## Get Own Profile\n\nReturns the profile information of the currently authenticated user.\n\n### Method\n\nGET\n\n### Endpoint\n\n/api/users/profile\n\n### Access\n\nUser/Admin\n\n### Authorization\n\nBearer Token\n\n### Requirements\n\n- Authentication is required.\n    \n- The profile belongs to the currently logged-in user.\n    \n- Password must never be returned.\n    \n\n### Success\n\n200 OK\n\nReturns the authenticated user's profile information.\n\n### Errors\n\n401 Unauthorized - Authentication token is missing or invalid.  \n404 Not Found - User does not exist."
+          },
+          "response": []
+        },
+        {
+          "name": "Admin Own Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ADMIN_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/users/profile",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "users",
+                "profile"
+              ]
+            },
+            "description": "## Get Own Profile\n\nReturns the profile information of the currently authenticated user.\n\n### Method\n\nGET\n\n### Endpoint\n\n/api/users/profile\n\n### Access\n\nUser/Admin\n\n### Authorization\n\nBearer Token\n\n### Requirements\n\n- Authentication is required.\n    \n- The profile belongs to the currently logged-in user.\n    \n- Password must never be returned.\n    \n\n### Success\n\n200 OK\n\nReturns the authenticated user's profile information.\n\n### Errors\n\n401 Unauthorized - Authentication token is missing or invalid.  \n404 Not Found - User does not exist."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Own Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{USER_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"firstname\": \"John\",\r\n    \"lastname\": \"Mahmud\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/users/profile/update",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "users",
+                "profile",
+                "update"
+              ]
+            },
+            "description": "## Update Own Profile\n\nUpdates the profile information of the currently authenticated user.\n\n### Method\n\nPUT\n\n### Endpoint\n\n/api/users/profile/update\n\n### Access\n\nUser/Admin\n\n### Authorization\n\nBearer Token\n\n### Request Body\n\n{  \n\"firstname\": \"John\",  \n\"lastname\": \"Smith\"  \n}\n\n### Requirements\n\n- Authentication is required.\n    \n- User can update their own profile only.\n    \n- First name and last name must not be empty.\n    \n- User must not be allowed to modify the role.\n    \n- User must not be allowed to modify isActive.\n    \n\n### Success\n\n200 OK\n\nReturns a success message after updating the profile.\n\n### Errors\n\n400 Bad Request - Required fields are missing or invalid.  \n401 Unauthorized - Authentication token is missing or invalid.  \n404 Not Found - User does not exist."
+          },
+          "response": []
+        },
+        {
+          "name": "Try Updating Role",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{USER_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"firstname\": \"John\",\r\n    \"lastname\": \"Mahmud\",\r\n    \"email\": \"john@example.com\",\r\n    \"role\": \"admin\",\r\n    \"isActive\": false\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/users/profile/update",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "users",
+                "profile",
+                "update"
+              ]
+            },
+            "description": "## Update Own Profile\n\nUpdates the profile information of the currently authenticated user.\n\n### Method\n\nPUT\n\n### Endpoint\n\n/api/users/profile/update\n\n### Access\n\nUser/Admin\n\n### Authorization\n\nBearer Token\n\n### Request Body\n\n{  \n\"firstname\": \"John\",  \n\"lastname\": \"Smith\"  \n}\n\n### Requirements\n\n- Authentication is required.\n    \n- User can update their own profile only.\n    \n- First name and last name must not be empty.\n    \n- User must not be allowed to modify the role.\n    \n- User must not be allowed to modify isActive.\n    \n\n### Success\n\n200 OK\n\nReturns a success message after updating the profile.\n\n### Errors\n\n400 Bad Request - Required fields are missing or invalid.  \n401 Unauthorized - Authentication token is missing or invalid.  \n404 Not Found - User does not exist."
+          },
+          "response": []
+        },
+        {
+          "name": "Password Update",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{USER_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"password\": \"newPassword123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/users/password",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "users",
+                "password"
+              ]
+            },
+            "description": "## Update Password\n\nUpdates the password of the currently authenticated user.\n\n### Method\n\nPATCH\n\n### Endpoint\n\n/api/users/password\n\n### Access\n\nUser/Admin\n\n### Authorization\n\nBearer Token\n\n### Request Body\n\n{  \n\"password\": \"newPassword123\"  \n}\n\n### Requirements\n\n- Authentication is required.\n    \n- New password is required.\n    \n- Password must satisfy the minimum length requirement.\n    \n- Password must be hashed before storing.\n    \n- Plain-text password must never be stored in the database.\n    \n\n### Success\n\n200 OK\n\nReturns a success message after successfully updating the password.\n\n### Errors\n\n400 Bad Request - Password is missing or invalid.  \n401 Unauthorized - Authentication token is missing or invalid.  \n404 Not Found - User does not exist."
+          },
+          "response": []
+        },
+        {
+          "name": "Deactivate User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ADMIN_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"isActive\": false\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/users/14/status",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "users",
+                "14",
+                "status"
+              ]
+            },
+            "description": "## Deactivate User\n\nDeactivates a registered user account.\n\n### Method\n\nPATCH\n\n### Endpoint\n\n/api/users/:id/status\n\n### Access\n\nAdmin Only\n\n### Request Body\n\n{  \n\"isActive\": false  \n}\n\n### Requirements\n\n- Authentication is required.\n    \n- Only an admin can deactivate users.\n    \n- isActive must be a boolean value.\n    \n- The target user must exist.\n    \n\n### Success\n\n200 OK\n\n{  \n\"message\": \"User deactivated successfully.\"  \n}\n\n### Errors\n\n400 Bad Request - isActive must be true or false.  \n401 Unauthorized - Authentication token is missing or invalid.  \n403 Forbidden - User does not have admin permission.  \n404 Not Found - User does not exist."
+          },
+          "response": []
+        },
+        {
+          "name": "Deactivated User Login Test",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"turan@example.com\",\r\n    \"password\": \"password123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "## Deactivated User Login Test\n\nVerifies that a deactivated user cannot log in.\n\n### Method\n\nPOST\n\n### Endpoint\n\n/api/auth/login\n\n### Access\n\nPublic\n\n### Request Body\n\n{  \n\"email\": \"[john@example.com](https://mailto:john@example.com)\",  \n\"password\": \"password123\"  \n}\n\n### Requirement\n\n- The user account must be deactivated before this test.\n    \n- A deactivated user must not be able to log in.\n    \n\n### Expected Result\n\n401 Unauthorized\n\n### Expected Response\n\n{  \n\"message\": \"Your account is deactivated.\"  \n}"
+          },
+          "response": []
+        },
+        {
+          "name": "Activated User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ADMIN_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"isActive\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/users/14/status",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "users",
+                "14",
+                "status"
+              ]
+            },
+            "description": "## Activate User\n\nReactivates a previously deactivated user account.\n\n### Method\n\nPATCH\n\n### Endpoint\n\n/api/users/:id/status\n\n### Access\n\nAdmin Only\n\n### Request Body\n\n{  \n\"isActive\": true  \n}\n\n### Requirements\n\n- Authentication is required.\n    \n- Only an admin can activate users.\n    \n- isActive must be a boolean value.\n    \n- The target user must exist.\n    \n\n### Success\n\n200 OK\n\n{  \n\"message\": \"User activated successfully.\"  \n}\n\n### Errors\n\n400 Bad Request - isActive must be true or false.  \n401 Unauthorized - Authentication token is missing or invalid.  \n403 Forbidden - User does not have admin permission.  \n404 Not Found - User does not exist."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Blogs",
+      "item": [
+        {
+          "name": "Create Blog",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{USER_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"blogTitle\": \"API Post\",\r\n    \"blog\": \"hI my new JWT token.\",\r\n    \"category\": \"Education\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/blogs/create",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "blogs",
+                "create"
+              ]
+            },
+            "description": "## Create Blog\n\nCreates a new blog for the authenticated user.\n\n### Method\n\nPOST\n\n### Endpoint\n\n/api/blogs/create\n\n### Access\n\nUser / Admin\n\n### Authorization\n\nBearer Token\n\n### Request Body\n\n{  \n\"blogTitle\": \"Introduction to API Testing\",  \n\"blog\": \"This article explains the fundamentals of API testing.\",  \n\"category\": \"Testing\"  \n}\n\n### Requirements\n\n- Authentication is required.\n    \n- blogTitle, blog and category are required.\n    \n- The userId must be taken from the authenticated user.\n    \n- The client must not provide userId manually.\n    \n- Blog title cannot be empty.\n    \n- Blog content cannot be empty.\n    \n\n### Success\n\n201 Created\n\nReturns a success message and the newly created blog ID.\n\n### Example Response\n\n{  \n\"message\": \"Blog created successfully.\",  \n\"blogId\": 15  \n}\n\n### Errors\n\n400 Bad Request - Required fields are missing or empty.  \n401 Unauthorized - Authentication token is missing or invalid.  \n500 Internal Server Error - Server or database error."
+          },
+          "response": []
+        },
+        {
+          "name": "Guest: Get All Blogs",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/blogs",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "blogs"
+              ]
+            },
+            "description": "## All Blogs\n\nRetrieves all publicly available blogs with basic author information.\n\n### Method\n\nGET\n\n### Endpoint\n\n/api/blogs\n\n### Access\n\nPublic\n\n### Authentication\n\nNot required.\n\n### Request\n\nNo request body is required.\n\n### Response\n\nReturns a list of blogs containing:\n\n- Blog ID\n    \n- Blog title\n    \n- Blog content\n    \n- Category\n    \n- Creation time\n    \n- Update time\n    \n- Author ID\n    \n- Author first name\n    \n- Author last name\n    \n\n### Security\n\n- Passwords must never be exposed.\n    \n- Sensitive user information must not be returned.\n    \n\n### Success\n\n200 OK\n\nReturns the list of blogs with author information.\n\n### Error\n\n500 Internal Server Error - Internal server/database error."
+          },
+          "response": []
+        },
+        {
+          "name": "Blog by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/blogs/18",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "blogs",
+                "18"
+              ]
+            },
+            "description": "## Blog by ID\n\nReturns a specific blog by its ID along with author information.\n\n### Method\n\nGET\n\n### Endpoint\n\n/api/blogs/:id\n\n### Access\n\nPublic\n\n### Request\n\nNo request body is required.\n\n### Requirements\n\n- Blog ID is provided as a URL parameter.\n    \n- No authentication is required.\n    \n- The requested blog must exist.\n    \n- Author information is included.\n    \n- Password or sensitive user information must never be exposed.\n    \n\n### Success\n\n200 OK\n\nReturns the requested blog with author information.\n\n### Errors\n\n404 Not Found - Blog does not exist.  \n500 Internal Server Error - Server or database error."
+          },
+          "response": []
+        },
+        {
+          "name": "Search by Title",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/blogs?title=playwright",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "blogs"
+              ],
+              "query": [
+                {
+                  "key": "title",
+                  "value": "playwright"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Filter by Category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/blogs?category=Automation",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "blogs"
+              ],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "Automation"
+                }
+              ]
+            },
+            "description": "## Blog by ID\n\nReturns a specific blog by its ID along with author information.\n\n### Method\n\nGET\n\n### Endpoint\n\n/api/blogs/:id\n\n### Access\n\nPublic\n\n### Request\n\nNo request body is required.\n\n### Requirements\n\n- Blog ID is provided as a URL parameter.\n    \n- No authentication is required.\n    \n- The requested blog must exist.\n    \n- Author information is included.\n    \n- Password or sensitive user information must never be exposed.\n    \n\n### Success\n\n200 OK\n\nReturns the requested blog with author information.\n\n### Errors\n\n404 Not Found - Blog does not exist.  \n500 Internal Server Error - Server or database error."
+          },
+          "response": []
+        },
+        {
+          "name": "Filter by Search + Category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/blogs?title=playwright&category=Automation",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "blogs"
+              ],
+              "query": [
+                {
+                  "key": "title",
+                  "value": "playwright"
+                },
+                {
+                  "key": "category",
+                  "value": "Automation"
+                }
+              ]
+            },
+            "description": "## Blog by ID\n\nReturns a specific blog by its ID along with author information.\n\n### Method\n\nGET\n\n### Endpoint\n\n/api/blogs/:id\n\n### Access\n\nPublic\n\n### Request\n\nNo request body is required.\n\n### Requirements\n\n- Blog ID is provided as a URL parameter.\n    \n- No authentication is required.\n    \n- The requested blog must exist.\n    \n- Author information is included.\n    \n- Password or sensitive user information must never be exposed.\n    \n\n### Success\n\n200 OK\n\nReturns the requested blog with author information.\n\n### Errors\n\n404 Not Found - Blog does not exist.  \n500 Internal Server Error - Server or database error."
+          },
+          "response": []
+        },
+        {
+          "name": "User Update Own Blog",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{USER_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"blogTitle\": \"Updated API Testing\",\r\n    \"blog\": \"Updated blog content.\",\r\n    \"category\": \"Automation\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/blogs/update/20",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "blogs",
+                "update",
+                "20"
+              ]
+            },
+            "description": "## Blog Update Owner\n\nUpdates a blog owned by the authenticated user.\n\n### Method\n\nPUT\n\n### Endpoint\n\n/api/blogs/update/:id\n\n### Access\n\nAuthenticated User/Admin\n\n### Request Body\n\n{  \n\"blogTitle\": \"Updated Blog Title\",  \n\"blog\": \"Updated blog content\",  \n\"category\": \"Automation\"  \n}\n\n### Requirements\n\n- Authentication is required.\n    \n- The blog must exist.\n    \n- A normal user can update only their own blog.\n    \n- Required fields cannot be empty.\n    \n- The blog title cannot be empty.\n    \n- The blog content cannot be empty.\n    \n- The category cannot be empty.\n    \n- Admin users can update any user's blog.\n    \n\n### Success\n\n200 OK\n\nReturns a successful blog update message.\n\n### Errors\n\n400 Bad Request - Required fields are missing or empty.  \n401 Unauthorized - Authentication token is missing or invalid.  \n403 Forbidden - User is not the owner of the blog.  \n404 Not Found - Blog does not exist.  \n500 Internal Server Error - Server or database error."
+          },
+          "response": []
+        },
+        {
+          "name": "User Cannot Update Another User's Blog",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTIsImVtYWlsIjoiaGFja2VyQGV4YW1wbGUuY29tIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3ODc5NDM0OTIsImV4cCI6MTc4ODAyOTg5Mn0.7bJTCcQw_03-HspJHHm-42qAofxVkIFQI1GYkLzLSm4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"blogTitle\": \"Trying to Update Other User Blog\",\r\n    \"blog\": \"This should not be allowed.\",\r\n    \"category\": \"Testing\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/blogs/update/15",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "blogs",
+                "update",
+                "15"
+              ]
+            },
+            "description": "## Blog Update Normal User\n\nTests authorization by attempting to update another user's blog using a normal user account.\n\n### Method\n\nPUT\n\n### Endpoint\n\n/api/blogs/update/:id\n\n### Access\n\nAuthenticated Normal User\n\n### Request Body\n\n{  \n\"blogTitle\": \"Unauthorized Update\",  \n\"blog\": \"Trying to update another user's blog.\",  \n\"category\": \"Testing\"  \n}\n\n### Requirements\n\n- Authentication is required.\n    \n- The normal user must be logged in.\n    \n- The requested blog must belong to another user.\n    \n- A normal user must not be allowed to update another user's blog.\n    \n\n### Expected Result\n\n403 Forbidden\n\nResponse:\n\n{  \n\"message\": \"You are not authorized to update this blog.\"  \n}"
+          },
+          "response": []
+        },
+        {
+          "name": "Admin Update Another User's Blog",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ADMIN_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"blogTitle\": \"Admin Updated Blog\",\r\n    \"blog\": \"Admin updated another user's blog.\",\r\n    \"category\": \"Testing\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/blogs/update/17",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "blogs",
+                "update",
+                "17"
+              ]
+            },
+            "description": "## Blog Update Normal User\n\nTests authorization by attempting to update another user's blog using a normal user account.\n\n### Method\n\nPUT\n\n### Endpoint\n\n/api/blogs/update/:id\n\n### Access\n\nAuthenticated Normal User\n\n### Request Body\n\n{  \n\"blogTitle\": \"Unauthorized Update\",  \n\"blog\": \"Trying to update another user's blog.\",  \n\"category\": \"Testing\"  \n}\n\n### Requirements\n\n- Authentication is required.\n    \n- The normal user must be logged in.\n    \n- The requested blog must belong to another user.\n    \n- A normal user must not be allowed to update another user's blog.\n    \n\n### Expected Result\n\n403 Forbidden\n\nResponse:\n\n{  \n\"message\": \"You are not authorized to update this blog.\"  \n}"
+          },
+          "response": []
+        },
+        {
+          "name": "User Delete Own Blog",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{USER_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"message\": \"Blog deleted successfully.\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/blogs/delete/20",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "blogs",
+                "delete",
+                "20"
+              ]
+            },
+            "description": "## Blog Delete Own\n\nDeletes a blog owned by the authenticated user.\n\n### Method\n\nDELETE\n\n### Endpoint\n\n/api/blogs/delete/:id\n\n### Access\n\nAuthenticated User/Admin\n\n### Requirements\n\n- Authentication is required.\n    \n- The blog must exist.\n    \n- A normal user can delete only their own blog.\n    \n- Admin users can delete any user's blog.\n    \n\n### Success\n\n200 OK\n\nResponse:\n\n{  \n\"message\": \"Blog deleted successfully.\"  \n}\n\n### Errors\n\n401 Unauthorized - Authentication token is missing or invalid.  \n403 Forbidden - User is not the owner of the blog.  \n404 Not Found - Blog does not exist.  \n500 Internal Server Error - Server or database error."
+          },
+          "response": []
+        },
+        {
+          "name": "User Cannot Delete Another User's Blog",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsImVtYWlsIjoiYWxAZXhhbXBsZS5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTc4ODQzOTQzMywiZXhwIjoxNzg4NTI1ODMzfQ.QDGgbI3P-jDg417aUCSZiufFVleEUlNg2oFCPxsJrtw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"message\": \"Blog deleted successfully.\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/blogs/delete/17",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "blogs",
+                "delete",
+                "17"
+              ]
+            },
+            "description": "## Blog Delete Own\n\nDeletes a blog owned by the authenticated user.\n\n### Method\n\nDELETE\n\n### Endpoint\n\n/api/blogs/delete/:id\n\n### Access\n\nAuthenticated User/Admin\n\n### Requirements\n\n- Authentication is required.\n    \n- The blog must exist.\n    \n- A normal user can delete only their own blog.\n    \n- Admin users can delete any user's blog.\n    \n\n### Success\n\n200 OK\n\nResponse:\n\n{  \n\"message\": \"Blog deleted successfully.\"  \n}\n\n### Errors\n\n401 Unauthorized - Authentication token is missing or invalid.  \n403 Forbidden - User is not the owner of the blog.  \n404 Not Found - Blog does not exist.  \n500 Internal Server Error - Server or database error."
+          },
+          "response": []
+        },
+        {
+          "name": "Admin Delete Another User's Blog",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ADMIN_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"message\": \"Blog deleted successfully.\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/blogs/delete/19",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "blogs",
+                "delete",
+                "19"
+              ]
+            },
+            "description": "## Blog Deleted Admin other User\n\nAllows an authenticated admin to delete another user's blog.\n\n### Method\n\nDELETE\n\n### Endpoint\n\n/api/blogs/delete/:id\n\n### Access\n\nAdmin\n\n### Requirements\n\n- Authentication is required.\n    \n- The logged-in user must have the admin role.\n    \n- The requested blog must exist.\n    \n- Admin can delete another user's blog.\n    \n\n### Success\n\n200 OK\n\nResponse:\n\n{  \n\"message\": \"Blog deleted successfully.\"  \n}\n\n### Errors\n\n401 Unauthorized - Authentication token is missing or invalid.  \n403 Forbidden - User does not have admin permission for the operation.  \n404 Not Found - Blog does not exist.  \n500 Internal Server Error - Server or database error."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
