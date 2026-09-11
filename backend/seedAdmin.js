@@ -9,8 +9,8 @@ dotenv.config();
 async function seedAdmin() {
   await connectDB();
 
-  const email = process.env.ADMIN_EMAIL || "admin@gmail.com";
-  const password = process.env.ADMIN_PASSWORD || "12345";
+  const email = process.env.ADMIN_EMAIL || "admin@example.com";
+  const password = process.env.ADMIN_PASSWORD || "password123";
   const firstname = process.env.ADMIN_FIRSTNAME || "Admin";
   const lastname = process.env.ADMIN_LASTNAME || "User";
 
