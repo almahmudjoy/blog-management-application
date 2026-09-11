@@ -53,11 +53,14 @@ This project fulfills the Blog Application REST API assignment by implementing:
 
 ### Authentication
 - User registration
-- User login
+- Two-step user login with email OTP verification
 - JWT token generation and validation
 - Password hashing before store
 - Duplicate email prevention
 - Active/inactive account checks
+- Password-reset links sent by Gmail in production
+
+For local development, set `NODE_ENV=development` to use `DEV_OTP` instead of sending an OTP email. The seeded demo admin (`ADMIN_EMAIL`) uses `ADMIN_DEMO_OTP` and does not require Gmail. For real OTP and password-reset delivery for normal users, set `NODE_ENV=production`, `GMAIL_USER`, and `GMAIL_APP_PASSWORD` in `.env`.
 
 ### User Management
 - Get own profile
@@ -143,7 +146,8 @@ This project fulfills the Blog Application REST API assignment by implementing:
 | Method | Endpoint | Access | Purpose |
 | --- | --- | --- | --- |
 | POST | /api/auth/register | Public | Register a new user |
-| POST | /api/auth/login | Public | Login and receive JWT token |
+| POST | /api/auth/login | Public | Validate credentials and send an OTP |
+| POST | /api/auth/verify-otp | Public | Verify the OTP and receive a JWT token |
 | POST | /api/auth/forgot-password | Public | Request a password reset |
 | PATCH | /api/auth/reset-password/:token | Public | Set a new password |
 
@@ -192,6 +196,8 @@ Public blog responses include only safe author fields: `id`, `firstname`, and `l
 ## 🗄️ Database Setup
 
 Use the SQL script in [database/schema.sql](database/schema.sql) to create the required `blogdb` database and tables. The application connects through Sequelize using the environment variables below.
+
+The `users` table includes `otpHash`, `otpExpiresAt`, and `otpAttempts` for the two-step login flow. If the table already exists, add these columns manually or recreate it before testing OTP login.
 
 ```sql
 CREATE DATABASE IF NOT EXISTS blogdb;

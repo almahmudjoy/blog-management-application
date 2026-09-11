@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
+import helmet from "helmet";
 import multer from "multer";
+import rateLimit from "express-rate-limit";
 import "dotenv/config";
 
 import authRoutes from "./routes/authRoutes.js";
@@ -8,10 +10,39 @@ import userRoutes from "./routes/userRoutes.js";
 import blogRoutes from "./routes/blogRoutes.js";
 
 const app = express();
+const isProduction = process.env.NODE_ENV === "production";
 
-app.use(cors());
+app.use(helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 
+const otpRequestLimiter = rateLimit({
+    windowMs: isProduction ? 15 * 60 * 1000 : 60 * 1000,
+    max: isProduction ? 5 : 20,
+    skip: (req) =>
+        req.body?.email?.trim().toLowerCase() ===
+        (process.env.ADMIN_EMAIL || "admin@example.com").trim().toLowerCase(),
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+        message: "Too many OTP requests. Please try again later."
+    }
+});
+
+const otpVerificationLimiter = rateLimit({
+    windowMs: isProduction ? 10 * 60 * 1000 : 2 * 60 * 1000,
+    max: isProduction ? 10 : 30,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+        message: "Too many OTP attempts. Please try again later."
+    }
+});
+
+app.use("/api/auth/login", otpRequestLimiter);
+app.use("/api/auth/verify-otp", otpVerificationLimiter);
 app.use("/uploads", express.static("uploads"));
 
 app.use("/api/auth", authRoutes);

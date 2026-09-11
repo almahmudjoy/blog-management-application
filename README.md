@@ -175,7 +175,14 @@ DB_NAME=blogdb
 JWT_SECRET=replace_with_a_long_random_secret
 PORT=5000
 NODE_ENV=development
+GMAIL_USER=your_email@gmail.com
+GMAIL_APP_PASSWORD=your_gmail_app_password
+DEV_OTP=123456
 ```
+
+In development, login uses `DEV_OTP` and displays the code for local testing. For real OTP and password-reset email delivery, set `NODE_ENV=production` and use a Gmail App Password with two-step verification enabled.
+
+The seeded demo admin uses `admin@example.com`, `password123`, and the fixed demo OTP `123456`. Normal users continue to receive OTPs by email in production.
 
 ### Frontend
 
@@ -241,7 +248,7 @@ Role-based UI is backed by server authorization. The frontend never exposes cont
 | --- | --- | --- |
 | `/` | Public | Blog listing, search, and category filter |
 | `/blogs/[id]` | Public | Blog details and author information |
-| `/login` | Public | Login and forgot-password link |
+| `/login` | Public | Login, email OTP verification, and forgot-password link |
 | `/register` | Public | Account registration |
 | `/forgot-password` | Public | Request a password reset |
 | `/reset-password/[token]` | Public | Set a new password |
@@ -266,6 +273,7 @@ The BlogSpace frontend consumes the provided backend API. All authenticated requ
 | POST | `/api/auth/register` | Registration |
 | POST | `/api/auth/login` | Login |
 | POST | `/api/auth/forgot-password` | Forgot-password form |
+| POST | `/api/auth/verify-otp` | Login OTP form |
 | PATCH | `/api/auth/reset-password/:token` | Reset-password form |
 
 ### Users

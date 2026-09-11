@@ -36,6 +36,21 @@ const User = sequelize.define(
             allowNull: true
         },
 
+        otpHash: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+
+        otpExpiresAt: {
+            type: DataTypes.DATE,
+            allowNull: true
+        },
+
+        otpAttempts: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
+        },
+
         isActive: {
             type: DataTypes.BOOLEAN,
             defaultValue: true

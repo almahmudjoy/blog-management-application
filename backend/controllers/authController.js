@@ -1,6 +1,8 @@
 import {
     registerUser,
     loginUser,
+    requestLoginOtp,
+    verifyLoginOtp,
     requestPasswordReset,
     resetPassword
 } from "../services/auth.service.js";
@@ -86,16 +88,45 @@ export const login = async (req, res) => {
             });
         }
 
-        const result = await loginUser(
-            email,
-            password
-        );
+        const result = await requestLoginOtp(email, password);
+
+        return res.status(200).json({
+            message: result.message,
+            requiresOtp: true,
+            email: result.email,
+            devOtp: result.devOtp || undefined,
+            data: result.data || null
+        });
+
+    } catch (error) {
+        return res.status(error.statusCode || 500).json({
+            message: error.message || "Internal server error."
+        });
+    }
+};
+
+export const verifyOtp = async (req, res) => {
+    try {
+        const { email, otp } = req.body;
+
+        if (isEmpty(email) || isEmpty(otp)) {
+            return res.status(400).json({
+                message: "Email and OTP are required."
+            });
+        }
+
+        if (!validateEmail(email)) {
+            return res.status(400).json({
+                message: "Invalid email format."
+            });
+        }
+
+        const result = await verifyLoginOtp(email, otp);
 
         return res.status(200).json({
             message: "Login successful.",
             data: result
         });
-
     } catch (error) {
         return res.status(error.statusCode || 500).json({
             message: error.message || "Internal server error."

@@ -11,13 +11,14 @@
  */
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import ProfileMenu from "@/components/ProfileMenu";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function Navbar({ onToggleSidebar, showSidebarToggle = false }) {
   const { isAuthenticated, initialising } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const [term, setTerm] = useState(searchParams.get("search") || "");
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
@@ -135,7 +136,7 @@ export default function Navbar({ onToggleSidebar, showSidebarToggle = false }) {
           ) : (
             <>
               <Link
-                href="/login"
+                href={pathname === "/login" ? "/login?reset=1" : "/login"}
                 className="rounded-lg px-3 py-2 text-sm font-medium text-ink-600 transition hover:bg-brand-50 hover:text-brand-700"
               >
                 Login

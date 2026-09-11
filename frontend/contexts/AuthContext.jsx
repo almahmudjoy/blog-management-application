@@ -80,8 +80,7 @@ export function AuthProvider({ children }) {
       window.removeEventListener(UNAUTHORIZED_EVENT, handleUnauthorized);
   }, []);
 
-  const login = useCallback(async (credentials) => {
-    const { token, user: loginUser } = await authService.login(credentials);
+  const establishSession = useCallback(async (token, loginUser = null) => {
     setToken(token);
     try {
       const profile = await userService.getProfile();
@@ -94,6 +93,11 @@ export function AuthProvider({ children }) {
       throw error;
     }
   }, []);
+
+  const login = useCallback(async (credentials) => {
+    const { token, user: loginUser } = await authService.login(credentials);
+    return establishSession(token, loginUser);
+  }, [establishSession]);
 
   const logout = useCallback(
     ({ redirect = true } = {}) => {
@@ -116,10 +120,11 @@ export function AuthProvider({ children }) {
       isAuthenticated: Boolean(user),
       isAdmin: isAdminUser(user),
       login,
+      establishSession,
       logout,
       refreshProfile,
     }),
-    [user, initialising, login, logout, refreshProfile]
+    [user, initialising, login, establishSession, logout, refreshProfile]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -69,7 +69,38 @@
                 "login"
               ]
             },
-            "description": "## User Login\n\nAuthenticates a registered user and returns an authentication token.\n\n### Method\n\nPOST\n\n### Endpoint\n\n/api/auth/login\n\n### Access\n\nPublic\n\n### Request Body\n\n{  \n\"email\": \"[john@example.com](https://mailto:john@example.com)\",  \n\"password\": \"password123\"  \n}\n\n### Requirements\n\n- Email and password are required.\n    \n- User must exist.\n    \n- User must be active.\n    \n- Credentials must be valid.\n    \n\n### Success\n\n200 OK\n\nReturns an authentication token.\n\n### Errors\n\n401 Unauthorized - Invalid credentials or deactivated account."
+            "description": "## User Login\n\nValidates a registered user's credentials and sends an OTP. Call Verify Login OTP next to receive the authentication token.\n\n### Method\n\nPOST\n\n### Endpoint\n\n/api/auth/login\n\n### Access\n\nPublic\n\n### Request Body\n\n{  \n\"email\": \"[john@example.com](https://mailto:john@example.com)\",  \n\"password\": \"password123\"  \n}\n\n### Success\n\n200 OK\n\nReturns `requiresOtp: true`. In development, the response also includes the configured `DEV_OTP`.\n\n### Errors\n\n401 Unauthorized - Invalid credentials or deactivated account."
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Login OTP",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"nuhan@example.com\",\r\n    \"otp\": \"123456\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/auth/verify-otp",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "auth",
+                "verify-otp"
+              ]
+            },
+            "description": "## Verify Login OTP\n\nVerifies the OTP sent after login and returns the JWT token.\n\n### Method\n\nPOST\n\n### Endpoint\n\n/api/auth/verify-otp\n\n### Access\n\nPublic\n\n### Request Body\n\n{\n  \"email\": \"nuhan@example.com\",\n  \"otp\": \"123456\"\n}\n\n### Success\n\n200 OK - Returns the token and user data."
           },
           "response": []
         },

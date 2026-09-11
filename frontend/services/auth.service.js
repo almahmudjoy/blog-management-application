@@ -1,14 +1,13 @@
 /**
  * Authentication endpoints.
- *   POST /api/auth/register  -> { message, data: user }
- *   POST /api/auth/login     -> { message, data: { token, user } }
+ *   POST /api/auth/register         -> { message, data: user }
+ *   POST /api/auth/login            -> { message, requiresOtp, email, devOtp }
+ *   POST /api/auth/verify-otp       -> { message, data: { token, user } }
+ *   POST /api/auth/forgot-password  -> { message, resetToken? }
  *
  * The API stores names as `firstname` / `lastname`, so outbound bodies use
  * those keys and responses are normalised back to the `firstName` / `lastName`
  * shape the UI reads (see utils/format.js).
- *
- * The local backend returns a short-lived reset token outside production so
- * the flow can be tested without an email provider.
  */
 import { apiRequest, unwrap } from "@/utils/api";
 import { normalizeUser } from "@/utils/format";
@@ -40,12 +39,42 @@ export async function login({ email, password }) {
   });
 
   const data = unwrap(payload) || {};
-  const token = data.token || null;
+  const requiresOtp = Boolean(payload?.requiresOtp || data?.requiresOtp);
 
+  if (requiresOtp) {
+    return {
+      requiresOtp: true,
+      email: payload?.email || email.trim().toLowerCase(),
+      message: payload?.message || "OTP sent to your email.",
+      devOtp: payload?.devOtp || null,
+    };
+  }
+
+  const token = data.token || null;
   if (!token) {
     throw new Error(
       "Login succeeded but no authentication token was returned by the API."
     );
+  }
+
+  return {
+    token,
+    user: normalizeUser(data.user),
+    message: payload?.message || "Logged in.",
+  };
+}
+
+export async function verifyOtp({ email, otp }) {
+  const payload = await apiRequest("/auth/verify-otp", {
+    method: "POST",
+    body: { email: email.trim().toLowerCase(), otp: String(otp).trim() },
+  });
+
+  const data = unwrap(payload) || {};
+  const token = data.token || null;
+
+  if (!token) {
+    throw new Error("OTP verification succeeded but no token was returned.");
   }
 
   return {
